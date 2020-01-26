@@ -1,7 +1,9 @@
 from app import create_app, db
 from app.models import Product
+from flask_sqlalchemy import event
 
-def insert_product_test_data():
+@event.listens_for(Product.__table__, 'after_create')
+def insert_product_test_data(*args, **kwargs):
     print("Seeding Product table with sample data...", end="")
     p1 = Product(product_code='001', product_name='Lavender heart', price=9.25)
     p2 = Product(product_code='002', product_name='Personalised cufflinks', price=45.00)
