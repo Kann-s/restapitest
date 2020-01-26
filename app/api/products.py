@@ -31,9 +31,23 @@ def create_product():
     return response
 
 @bp.route('/product/<int:id>', methods=['PUT'])
-def update_product():
-    return {}
+def update_product(id):
+    product = Product.query.get_or_404(id)
+    data = request.get_json() or {}
+    if ('name' in data
+    and data['name']
+    and product.product_name
+    and data['name'] == product.product_name):
+        return bad_request('Please use a different name')
+    product.from_dict(data)
+    db.session.commit()
+    return jsonify(product.to_dict())
 
 @bp.route('/product/<int:id>', methods=['DELETE'])
-def delete_product():
-    return {}
+def delete_product(id):
+    product = Product.query.get_or_404(id)
+    db.session.delete(product)
+    db.session.commit()
+    response = jsonify(product.to_dict())
+    response.status_code = 200
+    return response
