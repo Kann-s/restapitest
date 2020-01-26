@@ -1,3 +1,10 @@
+# Exclude the application database from source control
+app.db
+
+# Exclude the application logs from source control
+logs/
+restapitest.log*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
