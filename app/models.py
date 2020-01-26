@@ -20,7 +20,7 @@ class Product(PaginatedAPIMixin, db.Model):
         data = {
             'id': self.id,
             'name': self.product_name,
-            'price': self.price,
+            'price': "{:0.2f}".format(self.price),
         }
         return data
 
@@ -32,7 +32,10 @@ class Product(PaginatedAPIMixin, db.Model):
         }
         for field in ['code', 'name', 'price']:
             if field in data:
-                setattr(self, field_to_cols_mapping.get(field), data[field])
+                if field == 'price':
+                    setattr(self, field_to_cols_mapping.get(field), float(data[field]))
+                else:
+                    setattr(self, field_to_cols_mapping.get(field), data[field])
 
     def __repr__(self):
         return json.dumps({
