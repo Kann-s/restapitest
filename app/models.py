@@ -25,9 +25,14 @@ class Product(PaginatedAPIMixin, db.Model):
         return data
 
     def from_dict(self, data):
+        field_to_cols_mapping = {
+            'code': 'product_code',
+            'name': 'product_name',
+            'price': 'price'
+        }
         for field in ['code', 'name', 'price']:
             if field in data:
-                setattr(self, field, data[field])
+                setattr(self, field_to_cols_mapping.get(field), data[field])
 
     def __repr__(self):
         return json.dumps({

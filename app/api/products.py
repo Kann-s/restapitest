@@ -1,5 +1,7 @@
 from app.api import bp
 from app.models import Product
+from app import db
+from app.api.errors import bad_request
 
 from flask import jsonify
 from flask import request
@@ -17,7 +19,16 @@ def get_product(id):
 
 @bp.route('/product', methods=['POST'])
 def create_product():
-    return {}
+    data = request.get_json() or {}
+    if 'name' not in data or 'price' not in data:
+        return bad_request('must include Product name and price fields')
+    product = Product()
+    product.from_dict(data)
+    db.session.add(product)
+    db.session.commit()
+    response = jsonify(product.to_dict())
+    response.status_code = 201
+    return response
 
 @bp.route('/product/<int:id>', methods=['PUT'])
 def update_product():
